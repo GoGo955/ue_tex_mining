@@ -1,7 +1,8 @@
 import re
 import nltk
 from nltk.corpus import stopwords
-nltk.download('stopwords')
+from nltk.stem.porter import PorterStemmer
+# nltk.download('stopwords')
 
 
 def clean_text(text: str) -> str:
@@ -14,10 +15,11 @@ def clean_text(text: str) -> str:
     5. remove excessive spaces (e.g. before or after a block of text);
     6. Includes previously drawn emoticons in the text;
     """
+    # extract emojis
+    emojis = re.findall("\;[><()-]{1,2}|\:[><()-]{1,2}", text)
+    text = re.sub("\;[><()-]{1,2}|\:[><()-]{1,2}", "", text)
     # remove html
     text = re.sub("<.*?>", " ", text)
-    # extract emojis
-    emojis = re.findall("[;:><()-]{2,3}", text)
     #  cast lower, remove digits
     text = re.sub("\d", "", text.lower())
     # # remove interpunction
@@ -34,3 +36,10 @@ def remove_eng_stopwords(text: str) -> str:
     words_list = text.split(" ")
     words_list = [word for word in words_list if word not in stopwords.words()]
     return " ".join(words_list)
+
+
+def porter_stem(text: str) -> list:
+    """"""
+    words_list = text.split(" ")
+    stemmer = PorterStemmer()
+    return [stemmer.stem(plural) for plural in words_list]
