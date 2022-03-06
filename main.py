@@ -9,7 +9,7 @@ dirty_txt = """
 if __name__ == "__main__":
     print("Dirty text: \n", dirty_txt)
     cleaned_words = clean_text(dirty_txt)
-    print("Cleaned text, displayed as a list of words and emojis: \n", cleaned_words)
+    print("Cleaned text, displayed as words and emojis: \n", cleaned_words)
     cleaned_words_no_stopwords = remove_eng_stopwords(cleaned_words)
     print(
         "Cleaned text, displayed as a list of words and emojis with no stopwords: \n",

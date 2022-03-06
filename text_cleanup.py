@@ -25,11 +25,12 @@ def clean_text(text: str) -> str:
     # remove multi spaces
     text = re.sub("\s{2,}", " ", text)
     # add emojis to list of words
-    clean_text = text.strip().split(" ") + emojis
-    # clean_text.extend(emojis)
+    clean_text = " ".join([text.strip(), " ".join(emojis)])
     return clean_text
 
 
-def remove_eng_stopwords(words_list: str) -> list:
+def remove_eng_stopwords(text: str) -> str:
     """"""
-    return [word for word in words_list if word not in stopwords.words()]
+    words_list = text.split(" ")
+    words_list = [word for word in words_list if word not in stopwords.words()]
+    return " ".join(words_list)
