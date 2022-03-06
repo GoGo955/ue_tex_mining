@@ -4,7 +4,7 @@ import re
 if __name__ == "__main__":
     # zad 1a
     no_digits_text = re.sub("\d", "", "Dzisiaj mamy 4 stopnie na plusie, 1 marca 2022 roku")
-    print("Text cleared from digits:\n",no_digits_text)
+    print("Text cleared from digits:\n", no_digits_text)
 
     # zad 1b
     html_text = """
