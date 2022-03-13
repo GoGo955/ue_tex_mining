@@ -1,5 +1,4 @@
 import re
-import nltk
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 # nltk.download('stopwords')
@@ -19,7 +18,7 @@ def clean_text(text: str) -> str:
     emojis = re.findall("\;[><()-]{1,2}|\:[><()-]{1,2}", text)
     text = re.sub("\;[><()-]{1,2}|\:[><()-]{1,2}", "", text)
     # remove html
-    text = re.sub("<.*?>", " ", text)
+    # text = re.sub("<.*?>", " ", text)
     #  cast lower, remove digits
     text = re.sub("\d", "", text.lower())
     # # remove interpunction
@@ -31,15 +30,18 @@ def clean_text(text: str) -> str:
     return clean_text
 
 
-def remove_eng_stopwords(text: str) -> str:
+def remove_eng_stopwords(words_list: list) -> list:
     """"""
-    words_list = text.split(" ")
-    words_list = [word for word in words_list if word not in stopwords.words()]
-    return " ".join(words_list)
+    return [word for word in words_list if word not in stopwords.words()]
 
 
-def porter_stem(text: str) -> list:
+def porter_stem(words_list: list) -> list:
     """"""
-    words_list = text.split(" ")
     stemmer = PorterStemmer()
     return [stemmer.stem(plural) for plural in words_list]
+
+
+def bow(words: list) -> dict:
+    """"""
+    uniques = list(set(words))
+    return {unique: words.count(unique) for unique in uniques}
