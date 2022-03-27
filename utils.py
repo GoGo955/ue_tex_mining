@@ -45,3 +45,11 @@ def bow(words: list) -> dict:
     """"""
     uniques = list(set(words))
     return {unique: words.count(unique) for unique in uniques}
+
+
+def tokenizer(true_raw):
+    """"doc"""
+    true_preprocessed = clean_text(true_raw)
+    true_preprocessed_lst = true_preprocessed.split(" ")
+    true_preprocessed_lst = remove_eng_stopwords(porter_stem(true_preprocessed_lst))
+    return [word for word in true_preprocessed_lst if len(word) > 3]

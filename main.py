@@ -1,25 +1,15 @@
 import pandas as pd
-from wordcloud import WordCloud
-import matplotlib.pyplot as plt
+from sklearn.feature_extraction.text import CountVectorizer
 
-from utils import clean_text, porter_stem, remove_eng_stopwords, porter_stem, bow
+from utils import tokenizer
 
 
 if __name__ == "__main__":
     # ingest
-    true_df = pd.read_csv("data/True.csv")
+    true_df = pd.read_csv("data/True.csv", nrows=1000)
     true_raw = " ".join(true_df['title'].to_list())
 
-    # preprocess
-    true_preprocessed = clean_text(true_raw)
-    true_preprocessed_lst = true_preprocessed.split(" ")
-    true_preprocessed_lst = porter_stem(remove_eng_stopwords(true_preprocessed_lst))
+    vectorizer = CountVectorizer(tokenizer=tokenizer)
+    true_transform = vectorizer.fit_transform(true_df['title']).toarray()
 
-    # clean
-    bag_of_words = bow(true_preprocessed_lst)
-
-    wc = WordCloud()
-    wc.generate_from_frequencies(bag_of_words)
-    plt.imshow(wc, interpolation='bilinear')
-    plt.axis("off")
-    plt.show()
+    print(true_transform)
