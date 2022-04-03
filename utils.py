@@ -1,4 +1,5 @@
 import re
+import numpy as np
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 # nltk.download('stopwords')
@@ -53,3 +54,17 @@ def tokenizer(true_raw):
     true_preprocessed_lst = true_preprocessed.split(" ")
     true_preprocessed_lst = remove_eng_stopwords(porter_stem(true_preprocessed_lst))
     return [word for word in true_preprocessed_lst if len(word) > 3]
+
+
+def sum_over(transform, feature_names, axis):
+    count = transform.sum(axis=axis)
+    l1 = {}
+    for i in range(1, 11):
+        idx = np.argmax(count)
+        if axis == 0:
+            l1[i] = (feature_names[idx], count[idx])
+        else:
+            l1[i] = (count[idx], idx)
+        count[idx] = 0
+
+    return l1
