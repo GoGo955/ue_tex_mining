@@ -2,6 +2,8 @@ import re
 import numpy as np
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
+import matplotlib.pyplot as plt
+from prettytable import PrettyTable
 # nltk.download('stopwords')
 
 
@@ -68,3 +70,31 @@ def sum_over(transform, feature_names, axis):
         count[idx] = 0
 
     return l1
+
+
+def plot_results(data: dict):
+    fig, ax = plt.subplots()
+
+    labels = [i[0] for i in data.values()][::-1]
+    values = [i[1] for i in data.values()][::-1]
+
+    ax.barh(labels, values)
+
+    for idx, val in enumerate(values):
+        plt.text(val, idx, str(val))
+
+    ax.set_xlabel('Ilosc wystapien')
+    ax.set_title('Tokeny wystepujace tylko w tytulach prawdziwych tweetow')
+
+    plt.show()
+
+
+def table_resutls(data: dict):
+    table = PrettyTable()
+    table.field_names = ['Term', 'Count']
+
+    for i in data.values():
+        table.add_row(i)
+
+    table.title = 'Tokeny wystepujace tylko w tytulach prawdziwych tweetow'
+    print(table)

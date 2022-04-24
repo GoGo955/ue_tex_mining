@@ -1,12 +1,13 @@
+from matplotlib.pyplot import table
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
-from utils import tokenizer, sum_over
+from utils import tokenizer, sum_over, plot_results, table_resutls
 
 
 if __name__ == "__main__":
     # ingest
-    true_df = pd.read_csv("data/True.csv", nrows=5)
+    true_df = pd.read_csv("data/True.csv", nrows=50)
     true_raw = " ".join(true_df['title'].to_list())
 
     count_vectorizer = CountVectorizer(tokenizer=tokenizer)
@@ -32,6 +33,12 @@ if __name__ == "__main__":
         axis=1
     )
 
-    print(top10_tokens)
-    print(most_important_tokens)
-    print(most_imp_docs)
+    # last lab
+    # print(top10_tokens)
+    # print(most_important_tokens)
+    # print(most_imp_docs)
+
+    # current lab
+    for i in [top10_tokens, most_important_tokens]:
+        table_resutls(i)
+        plot_results(i)
