@@ -8,7 +8,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, BaggingClassifier
 from sklearn.svm import LinearSVC
 from sklearn import metrics
 # nltk.download('stopwords')
@@ -129,7 +129,8 @@ def fit_classifiers(splitted_data):
         DecisionTreeClassifier(),
         RandomForestClassifier(),
         LinearSVC(),
-        AdaBoostClassifier()
+        AdaBoostClassifier(),
+        BaggingClassifier()
     ]
 
     for clf in clfs:
