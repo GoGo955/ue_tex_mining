@@ -58,10 +58,10 @@ def tokenizer(true_raw):
     return [word for word in true_preprocessed_lst if len(word) > 3]
 
 
-def sum_over(transform, feature_names, axis):
+def sum_over(transform, feature_names, axis, num_of_words = 10):
     count = transform.sum(axis=axis)
     l1 = {}
-    for i in range(1, 11):
+    for i in range(1, num_of_words+1):
         idx = np.argmax(count)
         if axis == 0:
             l1[i] = (feature_names[idx], count[idx])
