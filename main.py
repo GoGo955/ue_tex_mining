@@ -1,44 +1,42 @@
 from matplotlib.pyplot import table
+from numpy import full
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.model_selection import train_test_split
 
-from utils import tokenizer, sum_over, plot_results, table_resutls
+from utils import tokenizer
 
 
 if __name__ == "__main__":
     # ingest
     true_df = pd.read_csv("data/True.csv", nrows=50)
-    true_raw = " ".join(true_df['title'].to_list())
+    true_df['type'] = 'true'
+    # true_raw = " ".join(true_df['title'].to_list())
 
-    count_vectorizer = CountVectorizer(tokenizer=tokenizer)
-    tfidf_vectorizer = TfidfVectorizer(tokenizer=tokenizer)
+    fake_df = pd.read_csv("data/Fake.csv", nrows=50)
+    fake_df['type'] = 'fake'
+    # fake_raw = " ".join(true_df['title'].to_list())
 
-    true_count_transform = count_vectorizer.fit_transform(true_df['title']).toarray()
-    true_tfidf_transform = tfidf_vectorizer.fit_transform(true_df['title']).toarray()
+    full_df = pd.concat([fake_df, true_df])
 
-    top10_tokens = sum_over(
-        transform=true_count_transform,
-        feature_names=count_vectorizer.get_feature_names_out(),
-        axis=0
+    print(full_df.describe())
+    # full_raw = " ".join(full_df['title'].to_list())
+
+    datasets = train_test_split(
+        full_df['title'],
+        full_df['type'],
+        test_size=0.33,
+        random_state=1
     )
+    
+    dataset_names = ['X_train', 'X_test', 'y_train', 'y_test']
+    for df, df_name in zip(datasets, dataset_names):
 
-    most_important_tokens = sum_over(
-        transform=true_tfidf_transform,
-        feature_names=tfidf_vectorizer.get_feature_names_out(),
-        axis=0
-    )
-    most_imp_docs = sum_over(
-        transform=true_count_transform,
-        feature_names=count_vectorizer.get_feature_names_out(),
-        axis=1
-    )
 
-    # last lab
-    # print(top10_tokens)
-    # print(most_important_tokens)
-    # print(most_imp_docs)
 
-    # current lab
-    for i in [top10_tokens, most_important_tokens]:
-        table_resutls(i)
-        plot_results(i)
+    # count_vectorizer = CountVectorizer(tokenizer=tokenizer)
+    # # tfidf_vectorizer = TfidfVectorizer(tokenizer=tokenizer)
+
+    # true_count_transform = count_vectorizer.fit_transform(true_df['title']).toarray()
+    # fake_count_transform = count_vectorizer.fit_transform(fake_df['title']).toarray()
+    # # true_tfidf_transform = tfidf_vectorizer.fit_transform(true_df['title']).toarray()
