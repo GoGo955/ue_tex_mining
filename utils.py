@@ -4,6 +4,13 @@ from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 import matplotlib.pyplot as plt
 from prettytable import PrettyTable
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.svm import LinearSVC
+from sklearn import metrics
 # nltk.download('stopwords')
 
 
@@ -98,3 +105,34 @@ def table_resutls(data: dict):
 
     table.title = 'Tokeny wystepujace tylko w tytulach prawdziwych tweetow'
     print(table)
+
+
+def vectorize(df):
+    # TODO parametrize vectorizer
+    vectorizer = CountVectorizer(tokenizer=tokenizer)
+
+    title_transformed = vectorizer.fit_transform(df['title'])
+
+    splitted_data = train_test_split(
+        title_transformed,
+        df['type'],
+        test_size=0.33,
+        random_state=1
+    )
+    return splitted_data
+
+
+def fit_classifiers(splitted_data):
+    X_train, X_test, y_train, y_test = splitted_data
+
+    clfs = [
+        DecisionTreeClassifier(),
+        RandomForestClassifier(),
+        LinearSVC(),
+        AdaBoostClassifier()
+    ]
+
+    for clf in clfs:
+        clf.fit(X_train, y_train)
+        y_pred = clf.predict(X_test)
+        print(f"{clf} Accuracy:", metrics.accuracy_score(y_test, y_pred))
