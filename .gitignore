@@ -131,3 +131,4 @@ dmypy.json
 # My
 setup.cfg
 .vscode
+data/encoded_matches.csv
