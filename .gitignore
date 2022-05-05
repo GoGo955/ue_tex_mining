@@ -132,3 +132,4 @@ dmypy.json
 setup.cfg
 .vscode
 data/encoded_matches.csv
+data/preprocessed_matches.xlsx

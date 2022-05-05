@@ -37,5 +37,5 @@ def clean_name_cols(df: pd.DataFrame, cols: list([str])) -> pd.DataFrame:
     for colname in cols:
         df[f'{colname}_clean'] = df[colname].str.lower()
         df[f'{colname}_clean'] = df[f'{colname}_clean'].str.replace("[^A-Za-z\s\d]+", "")
-        df[f'{colname}_clean'] = df[f'{colname}_clean'].str.replace("\s{2,}", "")
+        df[f'{colname}_clean'] = df[f'{colname}_clean'].str.replace("\s+", "")
     return df
