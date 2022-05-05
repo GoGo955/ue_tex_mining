@@ -1,4 +1,6 @@
+from tkinter.messagebox import RETRY
 import pandas as pd
+import re
 
 
 def load_data(filename: str) -> pd.DataFrame:
@@ -28,4 +30,12 @@ def decode_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def clean_name_cols(df: pd.DataFrame, cols: list([str])) -> pd.DataFrame:
-    pass
+    """
+    Removes interpunctions, multispaces and format to lowercase given str columns.
+    Returns cleaned df.
+    """
+    for colname in cols:
+        df[f'{colname}_clean'] = df[colname].str.lower()
+        df[f'{colname}_clean'] = df[f'{colname}_clean'].str.replace("[^A-Za-z\s\d]+", "")
+        df[f'{colname}_clean'] = df[f'{colname}_clean'].str.replace("\s{2,}", "")
+    return df
