@@ -25,3 +25,7 @@ def decode_data(df: pd.DataFrame) -> pd.DataFrame:
             x.str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
         )
     )
+
+
+def clean_name_cols(df: pd.DataFrame, cols: list([str])) -> pd.DataFrame:
+    pass
