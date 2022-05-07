@@ -11,20 +11,22 @@ from utils import (
 )
 
 
-def execute():
-    def check_shape():
-        # temp shape check
-        print(f"Raw df row count: {raw_df.shape[0]}")
-        print(f"Clean df row count: {clean_df.shape[0]}")
-        print(f"Duplicate df row count: {duplicates_df.shape[0]}")
-        print(
-            "Summary row count after first (simple) phase of matching:",
-            f"{substr_match_df.shape[0] + exact_match_df.shape[0] + unmatched_df.shape[0]}"
-        )
-        print(f"Exact match df row count: {exact_match_df.shape[0]}")
-        print(f"Substrung match df row count: {substr_match_df.shape[0]}")
-        print(f"Unmatched df row count: {unmatched_df.shape[0]}")
-    # suppress pandas future warning
+def check_shape():
+    # temp shape check
+    print(f"Raw df row count: {raw_df.shape[0]}")
+    print(f"Clean df row count: {clean_df.shape[0]}")
+    print(f"Duplicate df row count: {duplicates_df.shape[0]}")
+    print(
+        "Summary row count after first (simple) phase of matching:",
+        f"{substr_match_df.shape[0] + exact_match_df.shape[0] + unmatched_df.shape[0]}"
+    )
+    print(f"Exact match df row count: {exact_match_df.shape[0]}")
+    print(f"Substrung match df row count: {substr_match_df.shape[0]}")
+    print(f"Unmatched df row count: {unmatched_df.shape[0]}")
+
+
+if __name__ == "__main__":
+    # suppress pandas future warning (related to regex method from pandas)
     simplefilter(action='ignore', category=FutureWarning)
     # raw
     raw_df = load_data("compare_matches.xlsx", 500)
@@ -47,13 +49,12 @@ def execute():
 
     # phase 2 - similarities. split unmatched to two sample dfs, create a cartesian product
     # and apply the lev dist func.
-    left = unmatched_df['name_1_clean']   # use .head(1000) on full df
+
+    # split data
+    left = unmatched_df['name_1_clean']
     right = unmatched_df['name_2_clean']
-    # use code below for full df
-    # right = pd.concat([
-    #     unmatched_df['name_2_clean'].head(500),
-    #     unmatched_df['name_2_clean'].sample(500)]
-    # )
+
+    # do crossjoin, apply the lev algo, add rank col for lev scores
     cart_df = cartesian_product_simplified(left, right)
     cart_df['lev'] = cart_df.apply(
         lambda row: find_best_match(row['name_1_clean'], row['name_2_clean']),
@@ -61,13 +62,23 @@ def execute():
     )
     cart_df['min_lev'] = cart_df.groupby('name_1_clean')['lev'].rank(method='min')
 
-    results_df = cart_df[cart_df['min_lev'].isin(range(4))].sort_values(['name_1_clean', 'min_lev'])
-    print(results_df.head(20))
-    # # cart_df.to_excel('data\cart_prod_sample.xlsx', engine='openpyxl')
-    # # clean_df.to_excel('data\clean_matches.xlsx', engine='openpyxl')
+    # select rows with best rank per each pair
+    results_df = cart_df[cart_df['min_lev'] == 1]
+    print(results_df.head(30))
 
+    # issue to solve - this approach leaves the duplicates. Also the output shape minimally differs
+    # from the original unmatched_df
+    print(f"Unmatched df row count: {unmatched_df.shape[0]}")
+    print(f"Matched df row count: {results_df.drop_duplicates().shape[0]}")
 
-if __name__ == "__main__":
-    execute()
-    # df = load_data('cart_prod_sample.xlsx').drop('Unnamed: 0', axis=1)
-    # print(df.head(10))
+    bad_matches_df = (
+        pd
+        .concat(
+            [
+                unmatched_df[['name_1_clean', 'name_2_clean']],
+                results_df[['name_1_clean', 'name_2_clean']]
+            ]
+        )
+        .drop_duplicates(keep=False)
+    )
+    print(bad_matches_df)
