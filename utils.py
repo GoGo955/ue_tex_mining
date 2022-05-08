@@ -91,9 +91,10 @@ def find_best_match(col_a, col_b, threshold=5):
 
     team_a = find_inner_permututations(col_a)
     team_b = find_inner_permututations(col_b)
-    permutations = []
 
     # get cartesian product
+    permutations = []
+
     for combination in it.product(team_a, team_b):
         permutations.append(combination)
 
