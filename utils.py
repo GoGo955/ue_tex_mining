@@ -111,11 +111,11 @@ def vectorize(df):
     # TODO parametrize vectorizer
     vectorizer = CountVectorizer(tokenizer=tokenizer)
 
-    title_transformed = vectorizer.fit_transform(df['title'])
+    title_transformed = vectorizer.fit_transform(df['verified_reviews'])
 
     splitted_data = train_test_split(
         title_transformed,
-        df['type'],
+        df['rating'],
         test_size=0.33,
         random_state=1
     )
@@ -136,4 +136,9 @@ def fit_classifiers(splitted_data):
     for clf in clfs:
         clf.fit(X_train, y_train)
         y_pred = clf.predict(X_test)
-        print(f"{clf} Accuracy:", metrics.accuracy_score(y_test, y_pred))
+        cm = metrics.confusion_matrix(y_test, y_pred, labels=clf.classes_)
+        print(clf)
+        print(metrics.classification_report(y_test, y_pred, labels=clf.classes_))
+        disp = metrics.ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=clf.classes_)
+        disp.plot()
+        plt.show()
